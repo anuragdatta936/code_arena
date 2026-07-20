@@ -1,0 +1,17 @@
+# Local dev only. Staging/prod uses a managed Postgres (Supabase/Neon) —
+# see the Week 1 guide for why we don't run Postgres ourselves in prod yet.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: codearena
+      POSTGRES_PASSWORD: codearena
+      POSTGRES_DB: codearena_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - codearena_pg_data:/var/lib/postgresql/data
+
+volumes:
+  codearena_pg_data:
