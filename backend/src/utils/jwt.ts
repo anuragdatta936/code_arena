@@ -8,7 +8,7 @@ export interface AccessTokenPayload {
 
 export function signAccessToken(payload: AccessTokenPayload): string {
   return jwt.sign(payload, env.JWT_ACCESS_SECRET, {
-    expiresIn: env.JWT_ACCESS_EXPIRES_IN,
+    expiresIn: env.JWT_ACCESS_EXPIRES_IN as unknown as import("ms").StringValue,
   });
 }
 
@@ -21,7 +21,7 @@ export function verifyAccessToken(token: string): AccessTokenPayload {
 // see token.service.ts. A leaked JWT alone isn't enough once it's revoked there.
 export function signRefreshToken(payload: { sub: string }): string {
   return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
-    expiresIn: env.JWT_REFRESH_EXPIRES_IN,
+    expiresIn: env.JWT_REFRESH_EXPIRES_IN as unknown as import("ms").StringValue,
   });
 }
 

@@ -15,6 +15,7 @@ model User {
   plan          String         @default("free")
   createdAt     DateTime       @default(now())
   refreshTokens RefreshToken[]
+  submissions   Submission[]
 
   @@map("users")
 }
@@ -33,4 +34,59 @@ model RefreshToken {
 
   @@index([userId])
   @@map("refresh_tokens")
+}
+
+model Problem {
+  id            String   @id @default(uuid())
+  title         String
+  difficulty    String   // e.g., "Easy", "Medium", "Hard"
+  tags          String[] // Array of strings for tags
+  timeLimitMs   Int      // Time limit in milliseconds
+  memoryLimitMb Int      // Memory limit in megabytes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  submissions   Submission[]
+  testcases     Testcase[]
+
+  @@map("problems")
+  // Index for fetching problems by difficulty
+  @@index([difficulty])
+  // GIN index for array containment queries on tags
+  @@index([tags], map: "problems_tags_gin_idx", type: Gin)
+}
+
+model Testcase {
+  id            String   @id @default(uuid())
+  problemId     String
+  problem       Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  input         String
+  expectedOutput String
+  isSample      Boolean  @default(false) // Whether this is a sample testcase shown to users
+  createdAt     DateTime @default(now())
+
+  @@map("testcases")
+  // Index for fetching testcases by problem
+  @@index([problemId])
+}
+
+model Submission {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  problemId     String
+  problem       Problem  @relation(fields: [problemId], references: [id])
+  language      String   // e.g., "python", "java", "cpp"
+  code          String
+  status        String   // PENDING | PROCESSING | ACCEPTED | WRONG_ANSWER | TLE | MLE | RE
+  runtimeMs     Int?
+  memoryKb      Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status], map: "submissions_status_idx") // helps with queue monitoring
+  @@index([problemId]) // for fetching submissions by problem
+  @@index([problemId, status], map: "submissions_problem_status_idx") // composite index for problem-specific status queries
+  @@index([userId, createdAt], map: "submissions_user_created_idx") // index for user submission history queries
+  @@map("submissions")
 }

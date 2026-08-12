@@ -1,0 +1,40 @@
+app = "codearena-workers"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+
+[worker]
+  command = "node dist/worker/index.js"
+
+[deploy]
+  strategy = "rolling"
+
+# Health check service (minimal, just for Fly's health monitoring)
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+  # Workers don't need to serve HTTP; this is just for Fly's health checks
+
+  [[services.ports]]
+    port = 3000
+    handlers = ["tcp"]
+    # Note: Workers don't serve HTTP, but we need a health check for Fly
+
+  # Add health checks - simple TCP check to see if the process is listening
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+    restart_limit = 0
+
+# Mount volume for temporary work directories to improve performance
+# This prevents recreating the tmp/work directory on every container start
+[[mounts]]
+  source = "worker_tmp"
+  destination = "/app/tmp/work"
+
+[[volumes]]
+  name = "worker_tmp"
+  size = 1

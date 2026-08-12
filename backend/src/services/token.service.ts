@@ -18,7 +18,7 @@ export async function issueTokenPair(userId: string, email: string) {
     data: {
       userId,
       tokenHash: hashToken(refreshToken),
-      expiresAt: new Date(Date.now() + ms(env.JWT_REFRESH_EXPIRES_IN)),
+      expiresAt: new Date(Date.now() + ms(env.JWT_REFRESH_EXPIRES_IN as unknown as ms.StringValue)),
     },
   });
 
