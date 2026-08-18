@@ -4,6 +4,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import { env } from "../config/env";
+import { SubmissionStatus } from "../services/submissions.service";
 
 const execFilePromise = promisify(execFile);
 
@@ -26,7 +27,7 @@ export function ensureWorkDir() {
  * Result of code execution.
  */
 export interface ExecutionResult {
-  verdict: "Accepted" | "Wrong Answer" | "Time Limit Exceeded" | "Memory Limit Exceeded" | "Runtime Error";
+  verdict: SubmissionStatus;
   runtimeMs: number; // actual runtime in milliseconds
   memoryKb: number; // max memory used in KB
   stdout: string;
@@ -186,7 +187,7 @@ export async function executeCode(
     }
 
     return {
-      verdict: "Accepted", // If we got here without timeout, it ran successfully
+      verdict: SubmissionStatus.ACCEPTED, // If we got here without timeout, it ran successfully
       runtimeMs: endTime - startTime,
       memoryKb: actualMemoryKb,
       stdout: stdout.toString("utf8"),
@@ -229,7 +230,7 @@ export async function executeCode(
       }
 
       return {
-        verdict: "Time Limit Exceeded",
+        verdict: SubmissionStatus.TIME_LIMIT_EXCEEDED,
         runtimeMs: timeLimitMs, // We hit the time limit
         memoryKb: memoryKb,
         stdout: "",
@@ -272,7 +273,7 @@ export async function executeCode(
     }
 
     return {
-      verdict: "Runtime Error",
+      verdict: SubmissionStatus.RUNTIME_ERROR,
       runtimeMs: Date.now() - (typeof error.startTime !== "undefined" ? error.startTime : Date.now()),
       memoryKb: memoryKb,
       stdout: error.stdout ? error.stdout.toString("utf8") : "",

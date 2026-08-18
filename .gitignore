@@ -1,0 +1,48 @@
+# --- Project documentation (kept locally for Claude Code context, never pushed) ---
+CodeArena_Project_Plan.md
+CodeArena_Context_and_Roadmap.md
+BACKEND_WEEK1.md
+Report.txt
+*.audit.md
+
+# --- Dependencies ---
+node_modules/
+
+# --- Build output ---
+dist/
+build/
+
+# --- Env / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+# --- Prisma ---
+# Generated client is rebuilt by `prisma generate` on every install/deploy —
+# never needs to be committed, and can get large.
+backend/node_modules/.prisma/
+
+# --- Fly.io ---
+# Local Fly state — machine-specific, not portable across machines/CI.
+.fly/
+
+# --- Docker ---
+*.pid
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db
+
+# --- Editor ---
+.vscode/
+.idea/
+*.swp
+
+# --- Test/coverage output ---
+coverage/
+
+.claude

@@ -1,7 +1,7 @@
-import { prisma } from "../../config/prisma";
-import { redis } from "../../config/redis";
-import { executeCode, ExecutionResult } from "../../utils/dockerExecutor";
-import { SubmissionStatus } from "../../services/submissions.service";
+import { prisma } from "../config/prisma";
+import { redis } from "../config/redis";
+import { executeCode, ExecutionResult } from "../utils/dockerExecutor";
+import { SubmissionStatus } from "../services/submissions.service";
 
 // How long to wait between polling if queue is empty (ms)
 const POLL_INTERVAL_MS = 1000;
@@ -101,7 +101,7 @@ async function processJob(jobPayload: any): Promise<void> {
 
   let maxRuntime = 0;
   let maxMemory = 0;
-  let finalVerdict = SubmissionStatus.ACCEPTED;
+  let finalVerdict: SubmissionStatus = SubmissionStatus.ACCEPTED;
   let finalRuntime = 0;
   let finalMemory = 0;
 
@@ -121,7 +121,7 @@ async function processJob(jobPayload: any): Promise<void> {
     } catch (error) {
       console.error(`[Worker] Unexpected error in executeCode for test case ${testCase.id}:`, error);
       result = {
-        verdict: "Runtime Error",
+        verdict: SubmissionStatus.RUNTIME_ERROR,
         runtimeMs: 0,
         memoryKb: 0,
         stdout: "",
@@ -134,17 +134,17 @@ async function processJob(jobPayload: any): Promise<void> {
     if (result.memoryKb > maxMemory) maxMemory = result.memoryKb;
 
     // Check if the execution exceeded limits or had runtime error
-    if (result.verdict === "Time Limit Exceeded") {
+    if (result.verdict === SubmissionStatus.TIME_LIMIT_EXCEEDED) {
       finalVerdict = SubmissionStatus.TIME_LIMIT_EXCEEDED;
       finalRuntime = result.runtimeMs;
       finalMemory = result.memoryKb;
       break;
-    } else if (result.verdict === "Memory Limit Exceeded") {
+    } else if (result.verdict === SubmissionStatus.MEMORY_LIMIT_EXCEEDED) {
       finalVerdict = SubmissionStatus.MEMORY_LIMIT_EXCEEDED;
       finalRuntime = result.runtimeMs;
       finalMemory = result.memoryKb;
       break;
-    } else if (result.verdict === "Runtime Error") {
+    } else if (result.verdict === SubmissionStatus.RUNTIME_ERROR) {
       finalVerdict = SubmissionStatus.RUNTIME_ERROR;
       finalRuntime = result.runtimeMs;
       finalMemory = result.memoryKb;
