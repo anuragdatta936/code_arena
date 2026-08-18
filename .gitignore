@@ -2,8 +2,13 @@
 CodeArena_Project_Plan.md
 CodeArena_Context_and_Roadmap.md
 BACKEND_WEEK1.md
+FRONTEND_PLAN.md
+SUMMARY.md
+PROMPT_FOR_NEXT_SESSION.md
 Report.txt
 *.audit.md
+*.png
+.claude/
 
 # --- Dependencies ---
 node_modules/
@@ -45,4 +50,3 @@ Thumbs.db
 # --- Test/coverage output ---
 coverage/
 
-.claude
