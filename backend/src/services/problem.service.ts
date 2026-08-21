@@ -12,6 +12,7 @@ const problemCache = new LRUCache<string, ProblemWithTestcases>(100); // Cache u
 export interface ProblemWithTestcases {
   id: string;
   title: string;
+  description: string;
   difficulty: string;
   tags: string[];
   timeLimitMs: number;
@@ -52,6 +53,7 @@ export async function getProblemById(problemId: string): Promise<ProblemWithTest
   const problemWithTestcases: ProblemWithTestcases = {
     id: problem.id,
     title: problem.title,
+    description: problem.description || "",
     difficulty: problem.difficulty,
     tags: problem.tags,
     timeLimitMs: problem.timeLimitMs,
@@ -105,6 +107,7 @@ export async function getProblemsByIds(problemIds: string[]): Promise<(ProblemWi
       const problemWithTestcases: ProblemWithTestcases = {
         id: p.id,
         title: p.title,
+        description: p.description || "",
         difficulty: p.difficulty,
         tags: p.tags,
         timeLimitMs: p.timeLimitMs,

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
+import { prisma } from "../config/prisma";
 import {
   getProblemById as getProblemByIdService,
   getProblemsByIds as getProblemsByIdsService,
@@ -65,7 +66,12 @@ export async function getProblems(
     ]);
 
     // Convert to the format expected by frontend
-    const problemsData = problems.map((problem) => ({
+    const problemsData = problems.map((problem: {
+      id: string;
+      title: string;
+      difficulty: string;
+      tags: string[];
+    }) => ({
       id: problem.id,
       title: problem.title,
       difficulty: problem.difficulty,
@@ -143,7 +149,12 @@ export async function getProblemTestCases(
       orderBy: { createdAt: 'asc' },
     });
 
-    const testcasesData = testcases.map((tc) => ({
+    const testcasesData = testcases.map((tc: {
+      id: string;
+      input: string;
+      expectedOutput: string;
+      isSample: boolean;
+    }) => ({
       id: tc.id,
       input: tc.input,
       expectedOutput: tc.expectedOutput,
