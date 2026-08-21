@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/auth";
 import {
   getProblems,
   getProblemById,
@@ -8,9 +7,8 @@ import {
 
 export const problemsRouter = Router();
 
-// Protect all problems routes with authentication (optional for public problems)
-// For now, we'll require authentication to access problems
-problemsRouter.use(authenticate);
+// Problems routes are public (no authentication required)
+// Submission routes remain protected
 
 /**
  * @route GET /problems
