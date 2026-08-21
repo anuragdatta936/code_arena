@@ -39,6 +39,7 @@ model RefreshToken {
 model Problem {
   id            String   @id @default(uuid())
   title         String
+  description   String?  // Detailed problem description
   difficulty    String   // e.g., "Easy", "Medium", "Hard"
   tags          String[] // Array of strings for tags
   timeLimitMs   Int      // Time limit in milliseconds
