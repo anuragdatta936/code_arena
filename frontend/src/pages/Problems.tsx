@@ -12,7 +12,6 @@ const Problems: React.FC = () => {
     data: problemsData,
     isLoading,
     isError,
-    isFetching,
   } = useProblems({
     page,
     limit,

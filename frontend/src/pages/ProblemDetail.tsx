@@ -3,16 +3,17 @@ import { useProblem, useProblemTestCases } from '../hooks/useProblems';
 import MonacoEditorComponent from '../components/editor/MonacoEditor';
 import { useState } from 'react';
 
+
 const ProblemDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const {
     data: problem,
-    isLoading: isProblemLoading,
+    isPending: isProblemLoading,
     isError: isProblemError,
   } = useProblem(id ?? '');
   const {
     data: testCases,
-    isLoading: isTestCasesLoading,
+    isPending: isTestCasesLoading,
     isError: isTestCasesError,
   } = useProblemTestCases(id ?? '');
   const [code, setCode] = useState('');
@@ -194,7 +195,7 @@ const ProblemDetail: React.FC = () => {
                 className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
               >
                 Submit Solution
-              </div>
+              </button>
             </div>
           </div>
         </div>

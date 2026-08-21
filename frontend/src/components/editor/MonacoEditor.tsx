@@ -1,4 +1,5 @@
-import { MonacoEditor } from '@monaco-editor/react';
+import MonacoEditor from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 
 // Language to Monaco language mapping
@@ -51,13 +52,18 @@ const MonacoEditorComponent: React.FC<MonacoEditorProps> = ({
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  // Set mounted to true when component mounts
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Load worker for the language when needed
   useEffect(() => {
     if (!mounted) return;
 
     // Configure Monaco editor environment
     (window as any).MonacoEnvironment = {
-      getWorkerURL: function (moduleId: any, label: any) {
+      getWorkerURL: function (_moduleId: any, label: any) {
         if (label === 'python') {
           return './python.worker.js';
         }
@@ -70,8 +76,8 @@ const MonacoEditorComponent: React.FC<MonacoEditorProps> = ({
   }, [mounted]);
 
   // Handle code changes
-  const handleChange = (value: string) => {
-    if (onChange) {
+  const handleChange = (value: string | undefined) => {
+    if (value !== undefined && onChange) {
       onChange(value);
     }
   };
@@ -83,18 +89,20 @@ const MonacoEditorComponent: React.FC<MonacoEditorProps> = ({
     minimap: { enabled: minimapEnabled },
     fontSize,
     tabSize,
-    wrapEnabled,
+    wordWrap: wrapEnabled ? 'on' : 'off',
     readOnly: readonly,
     automaticLayout: true,
     scrollBeyondLastLine: false,
     // Enable useful editing features
-    quickSuggestions: true,
-    parameterHints: true,
+    quickSuggestions: { other: true, comments: true, strings: true },
+    parameterHints: {
+      enabled: true
+    },
     suggestOnTriggerCharacters: true,
     // Code lens and code actions
     codeLens: true,
     // Matching brackets
-    matchBrackets: true,
+    matchBrackets: 'always',
     // Format on paste/ type
     // formatOnPaste: true,
     // formatOnType: true,
@@ -106,7 +114,9 @@ const MonacoEditorComponent: React.FC<MonacoEditorProps> = ({
 
   return (
     <MonacoEditor
-      ref={editorRef}
+      onMount={(editor) => {
+        editorRef.current = editor;
+      }}
       height={height}
       width={width}
       defaultLanguage={languageMap[language] || 'plaintext'}

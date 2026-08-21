@@ -1,41 +1,23 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { authApi } from '../services/api';
+
+// Define the user type for our mock data
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  rating: number;
+  totalSubmissions: number;
+  acceptedSubmissions: number;
+  joinDate: string;
+}
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editUsername, setEditUsername] = useState('');
   const [editEmail, setEditEmail] = useState('');
-
-  const fetchUserData = async () => {
-    // In a real app, this would call an API to get user data
-    // For now, we'll simulate with localStorage or mock data
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    // Mock user data - in real app, this would come from API
-    const mockUser = {
-      id: 1,
-      username: 'codearena_user',
-      email: 'user@example.com',
-      rating: 1200,
-      totalSubmissions: 42,
-      acceptedSubmissions: 28,
-      joinDate: '2026-01-15',
-    };
-    setUserData(mockUser);
-  };
-
-  // Simulate fetching user data on mount
-  // In a real app, you'd use useQuery with authApi.getUser()
-  // For simplicity, we'll call it directly in useEffect equivalent
-  // Since we can't use useEffect in this environment easily, we'll call it on render
-  // but guard against infinite loops
 
   // For demo purposes, we'll just check if we have token and mock the data
   const token = localStorage.getItem('token');

@@ -1,5 +1,15 @@
 import { Link } from 'react-router-dom';
-import { Problem } from '../../services/api';
+
+// Define the Problem interface locally since it's not exported from api
+interface Problem {
+  id: number;
+  title: string;
+  difficulty: string;
+  description?: string;
+  tags?: string[];
+  timeLimit?: number;
+  memoryLimit?: number;
+}
 
 interface ProblemCardProps {
   problem: Problem;
@@ -51,9 +61,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem }) => {
           </div>
 
           <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
-            {problem.description?.substring(0, 150)}{
-              problem.description?.length > 150 ? '...' : ''
-            }
+            {(problem.description?.substring(0, 150) ?? '')}{(problem.description?.length ?? 0) > 150 ? '...' : ''}
           </p>
 
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">

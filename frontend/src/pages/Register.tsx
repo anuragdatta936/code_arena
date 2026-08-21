@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authApi } from '../services/api';
 import { useMutation } from '@tanstack/react-query';
 
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -11,8 +12,8 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const registerMutation = useMutation({
-    mutationFn: (data: { username: string; email: string; password: string }) =>
-      authApi.register(data),
+    mutationFn: ({ username, email, password }: { username: string; email: string; password: string }) =>
+      authApi.register({ username, email, password }).then(res => res.data),
     onSuccess: () => {
       alert('Registration successful! Please log in.');
       navigate('/login');
@@ -92,10 +93,10 @@ const Register: React.FC = () => {
           <div className="flex justify-between">
             <button
               type="submit"
-              disabled={registerMutation.isLoading}
+              disabled={registerMutation.isPending}
               className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {registerMutation.isLoading ? 'Creating account...' : 'Sign Up'}
+              {registerMutation.isPending ? 'Creating account...' : 'Sign Up'}
             </button>
           </div>
           <div className="text-center mt-4">

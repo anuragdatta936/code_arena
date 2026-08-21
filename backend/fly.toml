@@ -1,3 +1,4 @@
+primary_region = "sin"
 app = "codearena-workers"
 
 [build]
@@ -38,3 +39,5 @@ app = "codearena-workers"
 [[volumes]]
   name = "worker_tmp"
   size = 1
+
+

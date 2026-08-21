@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authApi } from '../services/api';
 import { useMutation } from '@tanstack/react-query';
 
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -10,12 +11,12 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const loginMutation = useMutation({
-    mutationFn: (data: { email: string; password: string }) =>
-      authApi.login(data),
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      authApi.login({ email, password }).then(res => res.data),
     onSuccess: (data) => {
       // Save token to localStorage
-      if (data.data?.token) {
-        localStorage.setItem('token', data.data.token);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
       }
       // Redirect to problems page
       navigate('/problems');
@@ -75,10 +76,10 @@ const Login: React.FC = () => {
           <div className="flex justify-between">
             <button
               type="submit"
-              disabled={loginMutation.isLoading}
+              disabled={loginMutation.isPending}
               className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {loginMutation.isLoading ? 'Logging in...' : 'Sign In'}
+              {loginMutation.isPending ? 'Logging in...' : 'Sign In'}
             </button>
           </div>
           <div className="text-center mt-4">

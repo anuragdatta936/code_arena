@@ -9,21 +9,24 @@ const Submit: React.FC = () => {
   const { problemId } = useParams<{ problemId: string }>();
   const {
     data: problem,
-    isLoading: isProblemLoading,
+    isPending: isProblemLoading,
     isError: isProblemError,
   } = useProblem(problemId ?? '');
   const {
-    data: testCases,
-    isLoading: isTestCasesLoading,
+    isPending: isTestCasesLoading,
     isError: isTestCasesError,
   } = useProblemTestCases(problemId ?? '');
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState<'python' | 'java' | 'cpp'>('python');
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
-  const submitMutation = useMutation({
-    mutationFn: (data: { problemId: string; language: string; code: string }) =>
-      submissionsApi.create(data),
+  const submitMutation = useMutation<
+    any,
+    Error,
+    { problemId: string; language: string; code: string }
+  >({
+    mutationFn: ({ problemId, language, code }) =>
+      submissionsApi.create({ problemId, language, code }),
     onSuccess: () => {
       alert('Submission successful! Redirecting to submission results...');
       // TODO: Redirect to submission results page
@@ -172,10 +175,10 @@ const Submit: React.FC = () => {
               <div className="flex justify-end">
                 <button
                   onClick={handleSubmit}
-                  disabled={submitMutation.isLoading}
+                  disabled={submitMutation.isPending}
                   className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                 >
-                  {submitMutation.isLoading ? 'Submitting...' : 'Submit Solution'}
+                  {submitMutation.isPending ? 'Submitting...' : 'Submit Solution'}
                 </button>
               </div>
             </div>

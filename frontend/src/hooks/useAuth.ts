@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { authApi } from '../services/api';
 
 interface User {
   id: number;
@@ -49,7 +48,7 @@ export const useAuth = () => {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (_email: string, _password: string) => {
     try {
       // In a real app, this would call the login API
       // For now, we'll simulate a successful login
@@ -81,15 +80,15 @@ export const useAuth = () => {
     localStorage.removeItem('token');
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const register = async (_username: string, _email: string, _password: string) => {
     try {
       // In a real app, this would call the register API
       // For now, we'll simulate a successful registration
       setAuthState({
         user: {
           id: Date.now(), // Mock ID
-          username,
-          email,
+          username: _username,
+          email: _email,
           rating: 0,
           totalSubmissions: 0,
           acceptedSubmissions: 0,
