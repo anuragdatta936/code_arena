@@ -14,7 +14,9 @@ interface ProblemResponse {
 interface ProblemsApiResponse {
   data: ProblemResponse[];
   total: number;
-  // Add pagination fields if needed
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export const useProblems = (options: {
